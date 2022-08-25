@@ -1,6 +1,7 @@
 const express = require("express");
 const Interaction = require("./interaction.ts");
-const { Request: Req, Response: Res } = require("express");
+const config = require("config.json");
+const { Request: Req, Response: Res } = require("express");1
 const {readdirSync} = require("node:fs");
 const {
   InteractionType,
@@ -34,7 +35,7 @@ class client {
   }
 }
 const app = new client();
-app.initialize("ee33d9b6c5d086f2be80ce839312dcaadbdc33a3f120de02d349cba96c8dcf8a");
+app.initialize(config.PUBLIC_KEY);
 app.webserver.post("*", async function (req: typeof Req, res: typeof Res) {
   const { type, data: { name } } = req.body;
   if (type === InteractionType.PING) {
