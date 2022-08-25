@@ -1,22 +1,21 @@
-const express = require("express");
-const Interaction = require("./interaction.ts");
-const config = require("config.json");
-const { Request: Req, Response: Res } = require("express");1
-const {readdirSync} = require("node:fs");
+import Interaction from "./interaction";
+import express, { Request as Req, Response as Res } from "express";
+import * as config from "./config.json";
+import {readdirSync} from "node:fs";
 const {
   InteractionType,
   InteractionResponseType,
   verifyKey
 } = require("discord-interactions");
 class client {
-  webserver: typeof express;
+  webserver: any;
   commands: Map<any, any>;
   constructor() {
     this.webserver = express();
     this.commands = new Map();
   }
-  async initialize(clientKey: string) {
-    this.webserver.use(express.json({ verify: (req: typeof Req, res: typeof Res, buf: string) => {
+  async initialize(clientKey: string): Promise<any> {
+    this.webserver.use(express.json({ verify: (req: Req, res: Res, buf: Buffer) => {
       const signature = req.get('X-Signature-Ed25519');
       const timestamp = req.get('X-Signature-Timestamp');
       const isValidRequest = verifyKey(buf, signature, timestamp, clientKey);
@@ -26,7 +25,7 @@ class client {
     }}));
     const commandFiles = readdirSync('./commands').filter((file: string) => file.endsWith('.ts'));
     commandFiles.forEach(async (file: string)=>{
-        const command = require(`./commands/${file}`);
+        const command = await import(`./commands/${file}`);
         this.commands.set(command.data.name, command);
     });
     const listener = this.webserver.listen(5600, async () => {
@@ -36,7 +35,7 @@ class client {
 }
 const app = new client();
 app.initialize(config.PUBLIC_KEY);
-app.webserver.post("*", async function (req: typeof Req, res: typeof Res) {
+app.webserver.post("*", async function (req: Req, res: Res) {
   const { type, data: { name } } = req.body;
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });

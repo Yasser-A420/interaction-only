@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/express": "^4.17.13",
     "axios": "^0.27.2",
     "discord-interactions": "^3.2.0",
     "express": "^4.18.1"
@@ -12,6 +13,8 @@
   },
   "keywords": [],
   "author": "",
+  "type": "module",
+  "module": "ES2022",
   "license": "ISC",
   "description": "",
   "devDependencies": {

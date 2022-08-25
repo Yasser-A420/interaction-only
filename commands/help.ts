@@ -1,9 +1,11 @@
-module.exports = {
+const Interaction = require("./interaction");
+import express from "express";
+export default {
     data: {
         name: "help"
     },
-    execute: async (interaction: typeof Interaction, app: typeof express) => {
+    async execute(interaction: typeof Interaction, app: typeof express): Promise<void>{
         const {InteractionResponseType} = require("discord-interactions")
-        interaction.reply(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE, {content: "Hey there"})
+        interaction.reply(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE, {content: "Hey there"});
     }
 } as any;
