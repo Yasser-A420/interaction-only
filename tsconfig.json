@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "es2022",
-    "module": "ES2022", 
-    "esModuleInterop": true, 
+    "module": "ESNext",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   }
 }

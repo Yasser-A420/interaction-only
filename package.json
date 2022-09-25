@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@types/express": "^4.17.13",
     "axios": "^0.27.2",
     "discord-interactions": "^3.2.0",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "ts-node": "^10.9.1"
   },
   "name": "interactions-only",
   "version": "1.0.0",
@@ -14,10 +14,10 @@
   "keywords": [],
   "author": "",
   "type": "module",
-  "module": "ES2022",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/express": "^4.17.14",
     "@types/node": "^18.7.13"
   }
 }
