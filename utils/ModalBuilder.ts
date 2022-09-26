@@ -1,7 +1,7 @@
 type Nullable<T> = T | null;
 interface Modal {
-    title?: string;
-    description?: string;
+    Title?: string;
+    custom_id?: string;
     color?: string;
     author?: object;
     footer?: object;
@@ -13,11 +13,11 @@ interface Modal {
 export type { Modal };
 export default class ModalBuilder {
     data;
-    constructor(embed?: Nullable<Modal>){
-        this.data = embed ?? {} as Modal;
+    constructor(modal?: Nullable<Modal>){
+        this.data = modal ?? {} as Modal;
     }
     setTitle(title: string){
-        this.data.title = title;
+        this.data.Title = title;
         return this;
     }
     setDescription(description: string){
@@ -46,15 +46,6 @@ export default class ModalBuilder {
     }
     setThumbnail(image: string){
         this.data.thumbnail= {url: image};
-        return this;
-    }
-    addFields(data: object){
-        if(this.data.fields){
-            this.data.fields.push(data);
-        } else {
-            this.data.fields = [];
-            this.data.fields.push(data);
-        }
         return this;
     }
     toJSON(){
