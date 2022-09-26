@@ -1,4 +1,4 @@
-import Interaction from "./interaction";
+import Interaction from "./utils/Interaction";
 import express, { Request as Req, Response as Res } from "express";
 import * as config from "./config.json" assert {type: "json"};
 import {readdirSync} from "node:fs";
@@ -36,7 +36,7 @@ class client {
   }
 }
 const app = new client();
-app.initialize("ee33d9b6c5d086f2be80ce839312dcaadbdc33a3f120de02d349cba96c8dcf8a");
+app.initialize(config.PUBLIC_KEY);
 app.webserver.post("*", async function (req: Req, res: Res) {
   const { type, data } = req.body;
   console.log(req.body)

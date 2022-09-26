@@ -1,4 +1,4 @@
-import Interaction from "../interaction";
+import Interaction from "../utils/Interaction";
 import express from "express";
 import EmbedBuilder from "../utils/EmbedBuilder";
 export default {

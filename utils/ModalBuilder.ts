@@ -1,5 +1,5 @@
 type Nullable<T> = T | null;
-interface Embed {
+interface Modal {
     title?: string;
     description?: string;
     color?: string;
@@ -10,11 +10,11 @@ interface Embed {
     image?: {url: string};
     thumbnail?: {url: string};
 }
-export type { Embed };
-export default class EmbedBuilder {
+export type { Modal };
+export default class ModalBuilder {
     data;
-    constructor(embed?: Nullable<Embed>){
-        this.data = embed ?? {} as Embed;
+    constructor(embed?: Nullable<Modal>){
+        this.data = embed ?? {} as Modal;
     }
     setTitle(title: string){
         this.data.title = title;
@@ -27,7 +27,7 @@ export default class EmbedBuilder {
     setColor(color: string){
         this.data.color = color;
         return this;
-    }
+    }                   
     setFooter(footer: object){
         this.data.footer = footer;
         return this;
@@ -58,6 +58,6 @@ export default class EmbedBuilder {
         return this;
     }
     toJSON(){
-        return this.data as Embed;
+        return this.data;
     }
 }

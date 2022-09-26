@@ -1,6 +1,6 @@
 import { InteractionResponseFlags } from "discord-interactions";
 import { Request as Req, Response as Res } from "express";
-import {Embed} from "./utils/EmbedBuilder";
+import {Embed} from "./EmbedBuilder";
 type Nullable<T> = T | null;
 interface ReplyOptions {
     Title?: string;
