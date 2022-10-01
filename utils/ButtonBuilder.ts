@@ -1,4 +1,5 @@
 type Nullable<T> = T | null;
+import * as Types from "./typings";
 const styles = {
     "Primary": 1,
     "Secondary": 2,
@@ -6,19 +7,10 @@ const styles = {
     "Danger": 4,
     "Link": 5
 };
-interface Button {
-    label?: string;
-    custom_id?: string;
-    url?: string;
-    disabled?: Boolean
-    type: Number;
-    style?: Number;
-}
-export type { Button };
 export default class ButtonBuilder {
     data;
-    constructor(button?: Nullable<Button>){
-        this.data = button ?? {type: 2} as Button;
+    constructor(button?: Nullable<Types.Button>){
+        this.data = button ?? {type: 2} as Types.Button;
     }
     setLabel(title: string){
         this.data.label = title;

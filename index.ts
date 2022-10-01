@@ -1,16 +1,18 @@
 import Interaction from "./utils/Interaction";
 import express, { Request as Req, Response as Res } from "express";
-import * as config from "./config.json" assert {type: "json"};
+import config from "./config.json" assert {type: "json"};
 import {readdirSync} from "node:fs";
 import {
   InteractionType,
   InteractionResponseType,
   verifyKey
 } from "discord-interactions";
-class client {
+import { EventEmitter } from "node:events";
+class client extends EventEmitter {
   webserver: any;
   commands: Map<any, any>;
   constructor() {
+    super();
     this.webserver = express();
     this.commands = new Map();
   }
@@ -33,19 +35,20 @@ class client {
     const listener = this.webserver.listen(5600, async () => {
       console.log(`Listening at port: ${listener.address().port}`)
     });
+    this.webserver.post("/interactions", async (req: Req, res: Res) => {
+      if (req.body.type === InteractionType.PING) {
+        return res.send({ type: InteractionResponseType.PONG });
+      } else {
+        this.emit("interaction", new Interaction(req, res));
+      }
+    });
   }
 }
 const app = new client();
 app.initialize(config.PUBLIC_KEY);
-app.webserver.post("*", async function (req: Req, res: Res) {
-  const { type, data } = req.body;
-  console.log(req.body)
-  if (type === InteractionType.PING) {
-    return res.send({ type: InteractionResponseType.PONG });
-  } else if (type === InteractionType.APPLICATION_COMMAND) {
-    const interaction = new Interaction(req, res);
-    const cmd = app.commands.get(data.name);
-    if(!cmd) return;
-    cmd.execute(interaction);
-  }
+app.on("interaction", async (interaction: Interaction) => {
+  console.log(interaction.req.body)
+  const cmd = app.commands.get(interaction.commandName);
+  if(!cmd) return; //interaction.reply(4, {content: "Not implemented"});
+  cmd.execute(interaction);
 });

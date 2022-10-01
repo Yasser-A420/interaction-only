@@ -1,20 +1,9 @@
 type Nullable<T> = T | null;
-interface Embed {
-    title?: string;
-    description?: string;
-    color?: string;
-    author?: object;
-    footer?: object;
-    url?: string;
-    fields?: Array<object>;
-    image?: {url: string};
-    thumbnail?: {url: string};
-}
-export type { Embed };
+import * as Types from "./typings";
 export default class EmbedBuilder {
     data;
-    constructor(embed?: Nullable<Embed>){
-        this.data = embed ?? {} as Embed;
+    constructor(embed?: Nullable<Types.Embed>){
+        this.data = embed ?? {} as Types.Embed;
     }
     setTitle(title: string){
         this.data.title = title;
@@ -48,16 +37,16 @@ export default class EmbedBuilder {
         this.data.thumbnail= {url: image};
         return this;
     }
-    addFields(data: object){
+    addFields(...data: Array<object>){
         if(this.data.fields){
-            this.data.fields.push(data);
+            this.data.fields.push(...data);
         } else {
             this.data.fields = [];
-            this.data.fields.push(data);
+            this.data.fields.push(...data);
         }
         return this;
     }
     toJSON(){
-        return this.data as Embed;
+        return this.data;
     }
 }

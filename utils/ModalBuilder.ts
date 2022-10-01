@@ -1,14 +1,9 @@
 type Nullable<T> = T | null;
-interface Modal {
-    Title: string;
-    custom_id: string;
-    components: Array<any>;
-}
-export type { Modal };
+import * as Types from "./typings";
 export default class ModalBuilder {
     data;
-    constructor(modal?: Nullable<Modal>){
-        this.data = modal ?? {title: "", custom_id: "", components: []} as Modal;
+    constructor(modal?: Nullable<Types.Modal>){
+        this.data = modal ?? {} as Types.Modal;
     }
     setTitle(title: string){
         this.data.Title = title;
@@ -18,8 +13,13 @@ export default class ModalBuilder {
         this.data.custom_id = id;
         return this;
     }
-    addComponents(fields){
-        this.data.components.push(...fields);
+    addComponents(fields: Array<any>){
+        if(this.data.components){
+            this.data.components.push(...fields);
+        } else {
+            this.data.components = [];
+            this.data.components.push(...fields);
+        }
         return this;
     }
     toJSON(){

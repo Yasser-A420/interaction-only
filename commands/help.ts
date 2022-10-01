@@ -6,6 +6,6 @@ export default {
     },
     async execute(interaction: Utilites.Interaction, app: typeof express): Promise<void>{
         const {InteractionResponseType} = await import("discord-interactions")
-        interaction.reply(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE, {embeds: [new Utilites.EmbedBuilder().setTitle("Hi!").toJSON()], components: [new Utilites.ButtonBuilder().setCustomId("hi").setLabel("Hello").setStyle("Success")]});
+        interaction.reply(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE, {embeds: [new Utilites.EmbedBuilder().setTitle("Hi!").toJSON()], components: [{type: 1, components: [new Utilites.ButtonBuilder().setCustomId("hi").setLabel("Hello").setStyle("Success").toJSON()]}]});
     }
 } as any;
