@@ -1,6 +1,5 @@
 import Interaction from "./utils/Interaction";
 import express, { Request as Req, Response as Res } from "express";
-import config from "./config.json" assert {type: "json"};
 import {readdirSync} from "node:fs";
 import {
   InteractionType,
@@ -10,11 +9,13 @@ import {
 import { EventEmitter } from "node:events";
 class client extends EventEmitter {
   webserver: any;
-  commands: Map<any, any>;
+  commands: Map<string, any>;
+  config: any;
   constructor() {
     super();
     this.webserver = express();
     this.commands = new Map();
+    this.config = import("./config.json").then(async (config)=>{return config});
   }
   async initialize(clientKey: string): Promise<any> {
     this.webserver.use(express.json({ verify: (req: Req, res: Res, buf: Buffer) => {
@@ -45,10 +46,10 @@ class client extends EventEmitter {
   }
 }
 const app = new client();
-app.initialize(config.PUBLIC_KEY);
+app.initialize(app.config.PUBLIC_KEY);
 app.on("interaction", async (interaction: Interaction) => {
   console.log(interaction.req.body)
-  const cmd = app.commands.get(interaction.commandName);
+  const cmd = app.commands.get(interaction.commandName as string);
   if(!cmd) return; //interaction.reply(4, {content: "Not implemented"});
   cmd.execute(interaction);
 });
