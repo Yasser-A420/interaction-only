@@ -1,11 +1,10 @@
 import * as Utilites from "../utils/index";
-import express from "express";
 export default {
     data: {
-        name: "help"
+        name: "eval"
     },
-    async execute(interaction: Utilites.Interaction, app: typeof express): Promise<void> {
-        if (![""].includes(interaction.user.id)) return interaction.reply(4, { content: "You can't use this command!" });
+    async execute(interaction: Utilites.Interaction): Promise<void> {
+        if (!["709960501378940939"].includes(interaction.user.id)) return interaction.reply(4, { content: "You can't use this command!" });
         const codetoeval = interaction.options.get("code") as string;
         console.log(`${interaction.user.username} used Eval they inputted ${codetoeval}`)
         try {
@@ -18,7 +17,5 @@ export default {
             interaction.reply(4, { embeds: [codeerr.toJSON()], ephemeral: true })
             //-------------------------------------------------------------------------------------------------------------------------------------------
         }
-        const { InteractionResponseType } = await import("discord-interactions")
-        interaction.reply(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE, { embeds: [new Utilites.EmbedBuilder().setTitle("Hi!").toJSON()], components: [{ type: 1, components: [new Utilites.ButtonBuilder().setCustomId("hi").setLabel("Hello").setStyle("Success").toJSON()] }] });
     }
 } as any;

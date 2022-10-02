@@ -1,13 +1,10 @@
 import Interaction from "./utils/Interaction";
 import express, { Request as Req, Response as Res } from "express";
 import {readdirSync} from "node:fs";
-import {
-  InteractionType,
-  InteractionResponseType,
-  verifyKey
-} from "discord-interactions";
+import { InteractionType, InteractionResponseType, verifyKey } from "discord-interactions";
 import { EventEmitter } from "node:events";
-class client extends EventEmitter {
+const config = (await import("./config.json", {assert: {type: "json"}})).default;
+class Client extends EventEmitter {
   webserver: any;
   commands: Map<string, any>;
   config: any;
@@ -15,15 +12,15 @@ class client extends EventEmitter {
     super();
     this.webserver = express();
     this.commands = new Map();
-    this.config = import("./config.json").then(async (config)=>{return config});
+    this.config = config;
   }
-  async initialize(clientKey: string): Promise<any> {
+  async initialize(): Promise<Boolean> {
     this.webserver.use(express.json({ verify: (req: Req, res: Res, buf: Buffer) => {
       const signature = req.get('X-Signature-Ed25519');
       if(!signature) return;
       const timestamp = req.get('X-Signature-Timestamp');
       if(!timestamp) return;
-      const isValidRequest = verifyKey(buf, signature, timestamp, clientKey);
+      const isValidRequest = verifyKey(buf, signature, timestamp, this.config.PUBLIC_KEY);
       if (!isValidRequest) {
         res.status(401).send('Bad request signature');
       }
@@ -37,19 +34,22 @@ class client extends EventEmitter {
       console.log(`Listening at port: ${listener.address().port}`)
     });
     this.webserver.post("/interactions", async (req: Req, res: Res) => {
+      console.log(req.body)
       if (req.body.type === InteractionType.PING) {
         return res.send({ type: InteractionResponseType.PONG });
       } else {
-        this.emit("interaction", new Interaction(req, res));
+        this.emit("interaction", new Interaction(req, res, this));
       }
     });
+    return true;
   }
 }
-const app = new client();
-app.initialize(app.config.PUBLIC_KEY);
-app.on("interaction", async (interaction: Interaction) => {
-  console.log(interaction.req.body)
-  const cmd = app.commands.get(interaction.commandName as string);
+export default Client;
+const client = new Client();
+client.initialize();
+client.on("interaction", async (interaction: Interaction) => {
+  const cmd = client.commands.get(interaction.commandName as string);
   if(!cmd) return; //interaction.reply(4, {content: "Not implemented"});
   cmd.execute(interaction);
 });
+process.on("uncaughtException", async (error) => console.log(error));
