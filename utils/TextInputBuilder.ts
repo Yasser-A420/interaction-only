@@ -1,11 +1,8 @@
 type Nullable<T> = T | null;
 import * as Types from "./typings";
 const styles = {
-    "Primary": 1,
-    "Secondary": 2,
-    "Success": 3,
-    "Danger": 4,
-    "Link": 5
+    "Short": 1,
+    "Paragraph": 2
 };
 export default class TextInputBuilder {
     data;
