@@ -6,7 +6,7 @@ export default class ModalBuilder {
         this.data = modal ?? {} as Types.Modal;
     }
     setTitle(title: string){
-        this.data.Title = title;
+        this.data.title = title;
         return this;
     }
     setCustomId(id: string){

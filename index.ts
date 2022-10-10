@@ -20,7 +20,7 @@ class Client extends EventEmitter {
       if(!signature) return;
       const timestamp = req.get('X-Signature-Timestamp');
       if(!timestamp) return;
-      const isValidRequest = verifyKey(buf, signature, timestamp, this.config.PUBLIC_KEY);
+      const isValidRequest = verifyKey(buf, signature, timestamp, config.PUBLIC_KEY);
       if (!isValidRequest) {
         res.status(401).send('Bad request signature');
       }
@@ -35,11 +35,8 @@ class Client extends EventEmitter {
     });
     this.webserver.post("/interactions", async (req: Req, res: Res) => {
       console.log(req.body)
-      if (req.body.type === InteractionType.PING) {
-        return res.send({ type: InteractionResponseType.PONG });
-      } else {
-        this.emit("interaction", new Interaction(req, res, this));
-      }
+      if(req.body.type === InteractionType.PING) return res.send({type: InteractionResponseType.PONG});
+      this.emit("interaction", new Interaction(req, res, this));
     });
     return true;
   }
@@ -49,7 +46,7 @@ const client = new Client();
 client.initialize();
 client.on("interaction", async (interaction: Interaction) => {
   const cmd = client.commands.get(interaction.commandName as string);
-  if(!cmd) return; //interaction.reply(4, {content: "Not implemented"});
+  if(!cmd) return interaction.reply(4, {content: `Not implemented.`});
   cmd.execute(interaction);
 });
 process.on("uncaughtException", async (error) => console.log(error));

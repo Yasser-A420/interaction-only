@@ -18,7 +18,7 @@ export default class Interaction {
     client: client;
     options: Map<string, string>;
     user: User;
-    member: Member;
+    member: Member | null;
     token: string;
     type: number;
     locale: Nullable<string>;
@@ -31,8 +31,7 @@ export default class Interaction {
         this.res = res;
         this.client = client;
         this.options = new Map();
-        req.body.data.options?.map((x: any) => this.options.set(x.name, x.value));
-        this.member = this.req.body.member ?? {};
+        this.member = this.req.body.member ?? null;
         this.user = this.req.body?.member?.user ?? this.req.body.user;
         this.token = this.req.body.token;
         this.type = this.req.body.type;
@@ -41,9 +40,18 @@ export default class Interaction {
         this.guildId = this.req.body.guild_id;
         this.customId = this.req.body.data.custom_id ?? null;
         this.commandName = this.req.body.data.name ?? null;
+        this.populateOptions();
     }
     get(name: string): any{ 
         return this.options.get(name);
+    }
+    populateOptions(): this {
+        if(this.type === 2){
+            this.req.body.data.options?.map((x: any) => this.options.set(x.name, x.value));
+        } else if(this.type === 5){
+            this.req.body.data.components.map((y: any) => y.components.map((x: any) => this.options.set(x.custom_id, x.value)));
+        }
+        return this;
     }
     async reply(type: number, data: ReplyOptions): Promise<any> {
         data.flags = data.ephemeral ? InteractionResponseFlags.EPHEMERAL : null

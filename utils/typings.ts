@@ -32,7 +32,7 @@ interface Embed {
     thumbnail?: {url: string};
 }
 interface Modal {
-    Title?: string;
+    title?: string;
     custom_id?: string;
     components?: Array<any>;
 }
