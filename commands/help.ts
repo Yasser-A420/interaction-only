@@ -6,6 +6,6 @@ export default {
     },
     async execute(interaction: Utilites.Interaction, app: typeof express): Promise<void>{
         const {InteractionResponseType} = await import("discord-interactions")
-        interaction.reply(9, {components: [{"type": 1, "components": [{"type": 3, "custom_id": "role-menu"}]}]});
+        interaction.reply(9, {components: [{"type": 1, "components": [{"type": 5, "custom_id": "role-menu"}]}]});
     }
 } as any;
