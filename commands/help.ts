@@ -6,17 +6,6 @@ export default {
     },
     async execute(interaction: Utilites.Interaction, app: typeof express): Promise<void>{
         const {InteractionResponseType} = await import("discord-interactions")
-        interaction.reply(9, new Utilites.ModalBuilder().setTitle("Hi").setCustomId("modal").addComponents([{
-            "type": 1,
-            "components": [{
-              "type": 4,
-              "custom_id": "name",
-              "label": "Name",
-              "style": 1,
-              "min_length": 1,
-              "max_length": 4000,
-              "placeholder": "John",
-              "required": true
-            }]}]).toJSON());
+        interaction.reply(9, {components: [{"type": 1, "components": [{"type": 3, "custom_id": "role-menu"}]}]});
     }
 } as any;
