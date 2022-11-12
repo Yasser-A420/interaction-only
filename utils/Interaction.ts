@@ -62,13 +62,13 @@ export default class Interaction {
     }
 };
 class InteractionOptions {
-    subcommand: string | null;
-    group: string | null;
+    subcommand?: string;
+    group?: string;
     _options: Map<string, any>;
     constructor(interactionData: Interaction){
         this._options = new Map();
-        this.subcommand = null;
-        this.group = null;
+        this.subcommand;
+        this.group;
         if(interactionData.type === 2){
             interactionData.req.body.data.options?.forEach((option: any)=>{
                 if(option.type === 2){
