@@ -16,7 +16,8 @@ export default class Interaction {
     req: Req;
     res: Res;
     client: client;
-    options: Map<string, string>;
+    options: InteractionOptions;
+    subcommands: string | null;
     user: User;
     member: Member | null;
     token: string;
@@ -30,7 +31,7 @@ export default class Interaction {
         this.req = req;
         this.res = res;
         this.client = client;
-        this.options = new Map();
+        this.subcommands = null;
         this.member = this.req.body.member ?? null;
         this.user = this.req.body?.member?.user ?? this.req.body.user;
         this.token = this.req.body.token;
@@ -40,18 +41,7 @@ export default class Interaction {
         this.guildId = this.req.body.guild_id;
         this.customId = this.req.body.data.custom_id ?? null;
         this.commandName = this.req.body.data.name ?? null;
-        this.populateOptions();
-    }
-    get(name: string): any{ 
-        return this.options.get(name);
-    }
-    populateOptions(): this {
-        if(this.type === 2){
-            this.req.body.data.options?.map((x: any) => this.options.set(x.name, x.value));
-        } else if(this.type === 5){
-            this.req.body.data.components.map((y: any) => y.components.map((x: any) => this.options.set(x.custom_id, x.value)));
-        }
-        return this;
+        this.options = new InteractionOptions(this);
     }
     async reply(type: number, data: ReplyOptions): Promise<any> {
         data.flags = data.ephemeral ? InteractionResponseFlags.EPHEMERAL : null
@@ -71,3 +61,42 @@ export default class Interaction {
         return;
     }
 };
+class InteractionOptions {
+    subcommand: string | null;
+    group: string | null;
+    _options: Map<string, any>;
+    constructor(interactionData: Interaction){
+        this._options = new Map();
+        this.subcommand = null;
+        this.group = null;
+        if(interactionData.type === 2){
+            interactionData.req.body.data.options?.forEach((option: any)=>{
+                if(option.type === 2){
+                    this.group = option.name;
+                    interactionData.req.body.data.options[0].options.forEach((subOption: any) => {
+                        if(subOption.type === 1){
+                            this.subcommand = subOption.name;
+                            interactionData.req.body.data.options[0].options[0].options.forEach((subSubOption: any) => {
+                                this._options.set(subSubOption.name, subSubOption.value)
+                            });
+                        }
+                    })
+                } else if(option.type === 1) {
+                    this.subcommand = option.name;
+                    interactionData.req.body.data.options[0].options?.forEach((subSubOption: any) => {
+                        this._options.set(subSubOption.name, subSubOption.value)
+                    });
+                } else {
+                    interactionData.req.body.data.options?.forEach((subSubOption: any) => {
+                        this._options.set(subSubOption.name, subSubOption.value)
+                    });
+                }
+            })
+         } else if(interactionData.type === 5){
+         } else if(interactionData.type === 3){
+         }
+    }
+    get(name: string): any{
+        return this._options.get(name);
+    }
+}

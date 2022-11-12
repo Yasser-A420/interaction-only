@@ -46,7 +46,7 @@ const client = new Client();
 client.initialize();
 client.on("interaction", async (interaction: Interaction) => {
   const cmd = client.commands.get(interaction.commandName as string);
-  if(!cmd) return interaction.reply(4, {content: `Not implemented.`});
+  if(!cmd) return interaction.reply(4, {content: "Placeholder"});
   cmd.execute(interaction);
 });
 process.on("uncaughtException", async (error) => console.log(error));
