@@ -16,6 +16,7 @@ export default class Interaction {
     req: Req;
     res: Res;
     client: client;
+    id: string;
     options: InteractionOptions;
     subcommands: string | null;
     user: User;
@@ -31,6 +32,7 @@ export default class Interaction {
         this.req = req;
         this.res = res;
         this.client = client;
+        this.id = req.body.data.id;
         this.subcommands = null;
         this.member = this.req.body.member ?? null;
         this.user = this.req.body?.member?.user ?? this.req.body.user;
@@ -49,6 +51,7 @@ export default class Interaction {
             type: type,
             data: data
         });
+        const replyData = await this.client.request(`/webhooks/${this.id}/${this.token}/messages/@original`, {});
         return;
     }
     async editReply(data: ReplyOptions): Promise<any> {
@@ -70,6 +73,7 @@ class InteractionOptions {
         this.subcommand;
         this.group;
         if(interactionData.type === 2){
+            if(this._options instanceof Array) return;
             interactionData.req.body.data.options?.forEach((option: any)=>{
                 if(option.type === 2){
                     this.group = option.name;
@@ -94,9 +98,17 @@ class InteractionOptions {
             })
          } else if(interactionData.type === 5){
          } else if(interactionData.type === 3){
+            if(interactionData.req.body.data.component_type === 6) {
+                interactionData.req.body.data.values.forEach((value: any)=>{
+                    this._options.set(value, interactionData.req.body.data.resolved.roles[value]);
+                });
+            }
          }
     }
-    get(name: string): any{
+    get(name: string){
         return this._options.get(name);
+    }
+    first() {
+        return this._options.values().next().value;
     }
 }
