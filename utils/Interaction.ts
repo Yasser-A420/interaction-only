@@ -73,7 +73,6 @@ class InteractionOptions {
         this.subcommand;
         this.group;
         if(interactionData.type === 2){
-            if(this._options instanceof Array) return;
             interactionData.req.body.data.options?.forEach((option: any)=>{
                 if(option.type === 2){
                     this.group = option.name;
